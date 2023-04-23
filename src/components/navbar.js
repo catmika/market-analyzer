@@ -1,32 +1,114 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleUp } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
+  //States
   const [isOpen, setIsOpen] = useState(false);
+  const [checkboxValues, setCheckboxValues] = useState({
+    sentiment: false,
+    news: false,
+    daily_candle: false,
+    position_calculator: false,
+    session_volatility: false,
+    seasonality: false,
+    dxy_gap: false,
+    study_materials: false,
+  });
+
+  //Functions
+  const handleCheckboxChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.checked;
+
+    // update the state for the checkbox with the matching name
+    setCheckboxValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
 
+  //Data
+  const checkboxOptions = [
+    {
+      label: "Sentiment",
+      name: "sentiment",
+      checked: checkboxValues.name,
+    },
+    {
+      label: "News",
+      name: "news",
+      checked: checkboxValues.name,
+    },
+    {
+      label: "Daily Candle",
+      name: "daily_candle",
+      checked: checkboxValues.name,
+    },
+    {
+      label: "Position calculator",
+      name: "position_calculator",
+      checked: checkboxValues.name,
+    },
+    {
+      label: "Session volatility",
+      name: "session_volatility",
+      checked: checkboxValues.name,
+    },
+    {
+      label: "Seasonality",
+      name: "seasonality",
+      checked: checkboxValues.name,
+    },
+    {
+      label: "DXY gap",
+      name: "dxy_gap",
+      checked: checkboxValues.name,
+    },
+    {
+      label: "Study materials",
+      name: "study_materials",
+      checked: checkboxValues.name,
+    },
+  ];
+
+  //Render
   return (
     <div className="pos-f-t">
       <div
-        className={`collapse ${isOpen ? "show" : ""}`}
+        className={`collapse${isOpen ? " show" : ""}`}
         id="navbarToggleExternalContent"
       >
-        <div className="bg-dark p-4">
-          <h4 className="text-white">Choose whatever you want</h4>
-          <span className="text-muted">Toggleable via the navbar brand.</span>
+        <div className="bg-dark p-4 container-fluid">
+          <div className="row">
+            {checkboxOptions.map((option) => (
+              <div className="col-sm-4" key={option.name}>
+                <label>
+                  {option.label}
+                  <input
+                    type="checkbox"
+                    name={option.name}
+                    checked={option.checked}
+                    onChange={handleCheckboxChange}
+                  />
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <nav className="navbar navbar-dark bg-dark">
         <button
-          className={`navbar-toggler ${isOpen ? "" : "collapsed"}`}
+          className={`navbar-toggler${isOpen ? "" : " collapsed"}`}
           type="button"
           onClick={toggleNavbar}
         >
-          <i
-            className={`fas ${isOpen ? "fa-chevron-up" : "fa-chevorn-down"}`}
-          ></i>
+          <FontAwesomeIcon icon={isOpen ? faAngleUp : faAngleDown} />
         </button>
       </nav>
     </div>
