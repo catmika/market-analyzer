@@ -84,17 +84,18 @@ const Navbar = () => {
         className={`collapse${isOpen ? " show" : ""}`}
         id="navbarToggleExternalContent"
       >
-        <div className="bg-dark p-4 container-fluid">
+        <div className="bg-dark p-4 container-fluid pb-0">
           <div className="row">
             {checkboxOptions.map((option) => (
               <div className="col-sm-4" key={option.name}>
-                <label>
+                <label className="form-check-label h5 m-2">
                   {option.label}
                   <input
                     type="checkbox"
                     name={option.name}
                     checked={option.checked}
                     onChange={handleCheckboxChange}
+                    className="form-check-input m-2"
                   />
                 </label>
               </div>
@@ -102,9 +103,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <nav className="navbar navbar-dark bg-dark">
+      <nav className="navbar navbar-dark bg-dark p-0 mb-3">
         <button
-          className={`navbar-toggler${isOpen ? "" : " collapsed"}`}
+          className={`navbar-toggler${isOpen ? "" : " collapsed"} m-1 w-100`}
           type="button"
           onClick={toggleNavbar}
         >
