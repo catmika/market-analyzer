@@ -1,7 +1,19 @@
-* {
-  text-align: center;
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: #212529 !important;
 }
 
-.col-sm-4 {
+* {
+  text-align: center;
   color: white;
+}
+
+.App {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.App > * {
+  flex: 1;
 }

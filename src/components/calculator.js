@@ -88,47 +88,67 @@ const Calculator = () => {
 
   // Render
   return (
-    <div>
-      <label>Instrument:</label>
-      <select
-        value={instrument}
-        onChange={(e) => {
-          setInstrument(e.target.value);
-        }}
-      >
-        {instruments.map((instrument) => (
-          <option key={instrument.name} value={instrument.name}>
-            {instrument.label}
-          </option>
-        ))}
-      </select>
+    <div className="container">
+      <div className="row">
+        <div className="col">
+          <label>Instrument:</label>
+          <select
+            className="form-select"
+            value={instrument}
+            onChange={(e) => {
+              setInstrument(e.target.value);
+            }}
+          >
+            {instruments.map((instrument) => (
+              <option key={instrument.name} value={instrument.name}>
+                {instrument.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
-      <label>Account Balance $:</label>
-      <input
-        type="number"
-        value={accountBalance}
-        onChange={(e) => setAccountBalance(e.target.value)}
-      />
+      <div className="row mt-3">
+        <div className="col">
+          <label>Account Balance $:</label>
+          <input
+            className="form-control"
+            type="number"
+            value={accountBalance}
+            onChange={(e) => setAccountBalance(e.target.value)}
+          />
+        </div>
+        <div className="col">
+          <label>Risk %:</label>
+          <input
+            className="form-control"
+            type="number"
+            value={riskPercentage}
+            onChange={(e) => setRiskPercentage(e.target.value)}
+          />
+        </div>
+        <div className="col">
+          <label>Stop Loss Pips:</label>
+          <input
+            className="form-control"
+            type="number"
+            value={stopLossPips}
+            onChange={(e) => setStopLossPips(e.target.value)}
+          />
+        </div>
+      </div>
 
-      <label>Risk %:</label>
-      <input
-        type="number"
-        value={riskPercentage}
-        onChange={(e) => setRiskPercentage(e.target.value)}
-      />
-
-      <label>Stop Loss Pips:</label>
-      <input
-        type="number"
-        value={stopLossPips}
-        onChange={(e) => setStopLossPips(e.target.value)}
-      />
-
-      <button onClick={calculatePositionSize}>Calculate Position Size</button>
-
-      <div>Position Size (Lots): {positionSize}</div>
+      <div className="row mt-3">
+        <div className="col">
+          <button className="btn btn-primary" onClick={calculatePositionSize}>
+            Calculate Position Size
+          </button>
+        </div>
+        <div className="col">
+          <div>Position Size (Lots): {positionSize}</div>
+        </div>
+      </div>
     </div>
   );
 };
-
 export default Calculator;
