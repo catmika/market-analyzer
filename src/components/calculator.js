@@ -1,96 +1,91 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const Calculator = () => {
   //Data
   const instruments = [
     {
       label: "EURUSD",
-      name: "EUR_USD",
-      lot_size: 1,
+      name: "EUR",
     },
     {
       label: "GBPUSD",
-      name: "GBP_USD",
-      lot_size: 1,
+      name: "GBP",
     },
     {
       label: "AUDUSD",
-      name: "AUD_USD",
-      lot_size: 1,
+      name: "AUD",
     },
     {
       label: "NZDUSD",
-      name: "NZD_USD",
-      lot_size: 1,
+      name: "NZD",
     },
     {
       label: "USDCAD",
-      name: "USD_CAD",
-      lot_size: 1,
+      name: "CAD",
     },
     {
       label: "USDCHF",
-      name: "USD_CHF",
-      lot_size: 1,
+      name: "CHF",
     },
     {
       label: "USDJPY",
-      name: "USD_JPY",
-      lot_size: 1,
-    },
-    {
-      label: "XAUUSD",
-      name: "XAU_USD",
-      lot_size: 0.001,
+      name: "JPY",
     },
   ];
   //States
   const [accountBalance, setAccountBalance] = useState("");
   const [riskPercentage, setRiskPercentage] = useState("");
-  const [stopLossLevel, setStopLossLevel] = useState("");
+  const [stopLossPips, setStopLossPips] = useState("");
   const [instrument, setInstrument] = useState(instruments[0].name);
-  const [lotSize, setLotSize] = useState(instruments[0].lot_size);
   const [positionSize, setPositionSize] = useState("");
-  const [latestPrice, setLatestPrice] = useState(null);
 
-  // Update lot size when instrument changes
-  useEffect(() => {
-    const selectedInstrument = instruments.find((i) => i.name === instrument);
-    setLotSize(selectedInstrument.lot_size);
-  }, [instrument, instruments]);
+  // Calculation
+  const calculatePositionSize = async () => {
+    const riskAmount = accountBalance * (riskPercentage / 100);
+    const stopLossDollars = 0.0001 * 100000;
 
-  //Get latest price
-  useEffect(() => {
-    const fetchLatestPrice = async () => {
+    if (
+      instrument === "EUR" ||
+      instrument === "GBP" ||
+      instrument === "AUD" ||
+      instrument === "NZD"
+    ) {
+      setPositionSize(
+        (riskAmount / (stopLossDollars * stopLossPips)).toFixed(2)
+      );
+    } else if (instrument !== "XAU") {
       await fetch(
-        `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${instrument.slice(
-          0,
-          3
-        )}&to_currency=${instrument.slice(4)}&apikey=97QAMO03Y5GP07VD`
+        `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=${instrument}&apikey=97QAMO03Y5GP07VD`
       )
         .then((response) => response.json())
         .then((data) => {
           const latestPrice =
             data["Realtime Currency Exchange Rate"]["5. Exchange Rate"];
-          setLatestPrice(latestPrice);
-          console.log(latestPrice);
+
+          if (instrument === "JPY") {
+            setPositionSize(
+              (
+                (latestPrice *
+                  (riskAmount / (stopLossDollars * stopLossPips))) /
+                100
+              ).toFixed(2)
+            );
+          } else {
+            setPositionSize(
+              (
+                latestPrice *
+                (riskAmount / (stopLossDollars * stopLossPips))
+              ).toFixed(2)
+            );
+          }
         })
         .catch((error) => {
           console.log(error);
+          alert(error);
         });
-    };
-
-    fetchLatestPrice();
-  }, [instrument]);
-
-  // Functions
-  const calculatePositionSize = () => {
-    const riskAmount = accountBalance * (riskPercentage / 100);
-    const pipValue = (lotSize / latestPrice) * 0.0001;
-    const stopLossPips = Math.abs(stopLossLevel - latestPrice) / pipValue;
-    const positionSize = riskAmount / (stopLossPips * pipValue);
-    setPositionSize(positionSize);
+    }
   };
+
   // Render
   return (
     <div>
@@ -125,13 +120,13 @@ const Calculator = () => {
       <label>Stop Loss Pips:</label>
       <input
         type="number"
-        value={stopLossLevel}
-        onChange={(e) => setStopLossLevel(e.target.value)}
+        value={stopLossPips}
+        onChange={(e) => setStopLossPips(e.target.value)}
       />
 
       <button onClick={calculatePositionSize}>Calculate Position Size</button>
 
-      <div>Position Size: {positionSize}</div>
+      <div>Position Size (Lots): {positionSize}</div>
     </div>
   );
 };
